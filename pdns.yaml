@@ -1,0 +1,24 @@
+---
+- hosts: dns
+  become: yes
+  tasks:
+   - name: Install necessary packages
+     apt:
+      pkg: 
+       - pdns-server
+       - pdns-backend-sqlite3
+       - sqlite3
+      state: latest
+   - name: Place pdns config file
+     copy:
+       src: "{{ playbook_dir }}/pdns.conf"
+       dest: /etc/powerdns/pdns.conf
+       owner: pdns
+       mode: 0644
+
+  handlers:
+   - name: Start powerdns
+     service:
+       name: pdns
+       state: started
+
