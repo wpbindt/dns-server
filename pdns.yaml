@@ -19,13 +19,18 @@
    - name: Place pdns database dir
      file:
        path: /var/lib/powerdns
-       owner: pdns
-       group: pdns
        state: directory
    - name: Set up pdns database
      shell: sqlite3 /var/lib/powerdns/pdns.sqlite3 < /usr/share/doc/pdns-backend-sqlite3/schema.sqlite3.sql
      args:
       creates: /var/lib/powerdns/pdns.sqlite3
+   - name: Hand over database to pdns user
+     file:
+       path: /var/lib/powerdns
+       owner: pdns
+       group: pdns
+       state: directory
+       recurse: yes
    - name: Start powerdns
      service:
        name: pdns
